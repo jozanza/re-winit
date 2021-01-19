@@ -9,8 +9,9 @@ use std::{
 use winit::{
   dpi::{PhysicalPosition, PhysicalSize},
   event::{
-    AxisId, DeviceEvent, DeviceId, ElementState, Event, Force, KeyboardInput, ModifiersState,
-    MouseButton, MouseScrollDelta, StartCause, Touch, TouchPhase, VirtualKeyCode, WindowEvent,
+    AxisId, ButtonId, DeviceEvent, DeviceId, ElementState, Event, Force, KeyboardInput,
+    ModifiersState, MouseButton, MouseScrollDelta, StartCause, Touch, TouchPhase, VirtualKeyCode,
+    WindowEvent,
   },
   event_loop::{ControlFlow, EventLoop},
   window::{Theme, Window, WindowBuilder, WindowId},
@@ -203,6 +204,33 @@ fn Val_AxisId(val: AxisId) -> AxisId_ {
 }
 
 fn AxisId_val<'a>(val: &'a AxisId_) -> &'a AxisId {
+  val.0.as_ref()
+}
+
+// event::ButtonId
+//------------------------------------------------------------------------------
+
+#[derive(ToValue, FromValue)]
+struct ButtonId_(Pointer<ButtonId>);
+
+impl Debug for ButtonId_ {
+  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    write!(f, "{:?}", self.0.as_ref())
+  }
+}
+
+#[allow(non_snake_case)]
+unsafe extern "C" fn finalize_ButtonId(v: Value) {
+  let ptr: Pointer<ButtonId> = Pointer::from_value(v);
+  ptr.drop_in_place()
+}
+
+fn Val_ButtonId(val: ButtonId) -> ButtonId_ {
+  let ptr = Pointer::alloc_final(val, Some(finalize_ButtonId), None);
+  ButtonId_(ptr)
+}
+
+fn ButtonId_val<'a>(val: &'a ButtonId_) -> &'a ButtonId {
   val.0.as_ref()
 }
 
@@ -1041,12 +1069,24 @@ fn WindowEvent_val<'a>(_val: WindowEvent_) -> WindowEvent<'a> {
 enum DeviceEvent_ {
   Added,
   Removed,
-  MouseMotion { delta: (f64, f64) },
-  MouseWheel { delta: (f64, f64) },
-  Motion { axis: isize, value: f64 },
-  Button { button: isize, state: bool },
-  Key(bool),
-  Text { codepoint: String },
+  MouseMotion {
+    delta: (f64, f64),
+  },
+  MouseWheel {
+    delta: MouseScrollDelta_,
+  },
+  Motion {
+    axis: AxisId_,
+    value: f64,
+  },
+  Button {
+    button: ButtonId_,
+    state: ElementState_,
+  },
+  Key(KeyboardInput_),
+  Text {
+    codepoint: String,
+  },
 }
 
 fn Val_DeviceEvent(value: DeviceEvent) -> DeviceEvent_ {
@@ -1055,16 +1095,21 @@ fn Val_DeviceEvent(value: DeviceEvent) -> DeviceEvent_ {
     Added => DeviceEvent_::Added,
     Removed => DeviceEvent_::Removed,
     MouseMotion { delta } => DeviceEvent_::MouseMotion { delta },
-    MouseWheel { delta: _ } => DeviceEvent_::MouseWheel { delta: (0., 0.) },
-    Motion { axis: _, value } => DeviceEvent_::Motion { axis: 0, value },
-    Button {
-      button: _,
-      state: _,
-    } => DeviceEvent_::Button {
-      button: 0,
-      state: false,
+    MouseWheel { delta } => DeviceEvent_::MouseWheel {
+      delta: Val_MouseScrollDelta(delta),
     },
-    Key(_) => DeviceEvent_::Key(false),
+    Motion { axis, value } => DeviceEvent_::Motion {
+      axis: Val_AxisId(axis),
+      value,
+    },
+    Button { button, state } => DeviceEvent_::Button {
+      button: Val_ButtonId(button),
+      state: Val_ElementState(state),
+    },
+    Key(input) => {
+      let input = Val_KeyboardInput(input);
+      DeviceEvent_::Key(input)
+    }
     Text { codepoint } => DeviceEvent_::Text {
       codepoint: format!("{}", codepoint),
     },

@@ -75,6 +75,7 @@ and Dpi: {
 and Event: {
   module DeviceId: {type t;};
   module AxisId: {type t;};
+  module ButtonId: {type t;};
   module VirtualKeyCode: {
     [@deriving show({with_path: false})]
     type t =
@@ -378,16 +379,16 @@ and Event: {
       | Added
       | Removed
       | MouseMotion({delta: (float, float)})
-      | MouseWheel({delta: (float, float)})
+      | MouseWheel({delta: MouseScrollDelta.t})
       | Motion({
-          axis: int,
+          axis: [@opaque] AxisId.t,
           value: float,
         })
       | Button({
-          button: int,
-          state: bool,
+          button: [@opaque] ButtonId.t,
+          state: ElementState.t,
         })
-      | Key(bool)
+      | Key(KeyboardInput.t)
       | Text({codepoint: string});
   };
   [@deriving show({with_path: false})]
@@ -413,6 +414,9 @@ and Event: {
     type t;
   };
   module AxisId = {
+    type t;
+  };
+  module ButtonId = {
     type t;
   };
   module VirtualKeyCode = {
@@ -718,16 +722,16 @@ and Event: {
       | Added
       | Removed
       | MouseMotion({delta: (float, float)})
-      | MouseWheel({delta: (float, float)})
+      | MouseWheel({delta: MouseScrollDelta.t})
       | Motion({
-          axis: int,
+          axis: [@opaque] AxisId.t,
           value: float,
         })
       | Button({
-          button: int,
-          state: bool,
+          button: [@opaque] ButtonId.t,
+          state: ElementState.t,
         })
-      | Key(bool)
+      | Key(KeyboardInput.t)
       | Text({codepoint: string});
   };
   [@deriving show({with_path: false})]
