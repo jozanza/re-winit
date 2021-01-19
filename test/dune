@@ -1,0 +1,10 @@
+(executables
+ (libraries re-winit)
+  (preprocess (pps ppx_deriving.show))
+ (names test)
+ (modules test))
+
+(rule
+ (alias runtest)
+ (action
+  (run ./test.exe)))

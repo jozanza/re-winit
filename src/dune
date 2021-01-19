@@ -1,0 +1,25 @@
+(rule
+ (targets libwinit.a dllwinit.so)
+ (deps (glob_files *.rs))
+ (action
+  (progn
+   (run cargo build --target-dir %{project_root}/../../target)
+   (run sh -c
+     "mv %{project_root}/../../target/debug/libwinit.so ./dllwinit.so 2> /dev/null || \
+      mv %{project_root}/../../target/debug/libwinit.dylib ./dllwinit.so")
+   (run mv %{project_root}/../../target/debug/libwinit.a libwinit.a))))
+
+(library
+ (name winit)
+ (public_name re-winit)
+ (foreign_archives winit)
+ (preprocess (pps ppx_deriving.show))
+ (c_library_flags
+  (-lpthread
+   -lc 
+   -lm 
+   -framework CoreFoundation 
+   -framework CoreGraphics
+   -framework ColorSync
+   -framework CoreVideo
+   -framework AppKit)))

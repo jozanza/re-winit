@@ -1,0 +1,13 @@
+[package]
+name = "winit"
+version = "0.1.0"
+authors = ["jozanza <hello@jsavary.com>"]
+edition = "2018"
+
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+ocaml = "*"
+winit = "0.24.0"
