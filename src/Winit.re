@@ -766,19 +766,32 @@ and EventLoop: {
     "re_winit_event_loop_EventLoop_run";
 }
 and Window: {
-  type t;
-  module WindowId: {type t;};
+  module WindowId: {
+    type t;
+    let (==): (t, t) => bool;
+    let (!=): (t, t) => bool;
+  };
   module Theme: {
     [@deriving show({with_path: false})]
     type t =
       | Light
       | Dark;
   };
-  let new_: EventLoop.t('a) => t;
-} = {
   type t;
+  let new_: EventLoop.t('a) => t;
+  let id: t => WindowId.t;
+  let set_always_on_top: (bool, t) => unit;
+  let set_decorations: (bool, t) => unit;
+  let set_minimized: (bool, t) => unit;
+  let set_maximized: (bool, t) => unit;
+  let set_resizable: (bool, t) => unit;
+  let set_title: (string, t) => unit;
+  let set_visible: (bool, t) => unit;
+} = {
   module WindowId = {
     type t;
+    external (==): (t, t) => bool = "re_winit_window_WindowId_eq";
+    let (!=) = (a, b) => !(a == b);
   };
   module Theme = {
     [@deriving show({with_path: false})]
@@ -786,5 +799,20 @@ and Window: {
       | Light
       | Dark;
   };
+  type t;
   external new_: EventLoop.t('a) => t = "re_winit_window_Window_new";
+  external id: t => WindowId.t = "re_winit_window_Window_id";
+  external set_always_on_top: (bool, t) => unit =
+    "re_winit_window_Window_set_always_on_top";
+  external set_decorations: (bool, t) => unit =
+    "re_winit_window_Window_set_decorations";
+  external set_minimized: (bool, t) => unit =
+    "re_winit_window_Window_set_minimized";
+  external set_maximized: (bool, t) => unit =
+    "re_winit_window_Window_set_maximized";
+  external set_resizable: (bool, t) => unit =
+    "re_winit_window_Window_set_resizable";
+  external set_title: (string, t) => unit = "re_winit_window_Window_set_title";
+  external set_visible: (bool, t) => unit =
+    "re_winit_window_Window_set_visible";
 };

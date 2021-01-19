@@ -67,6 +67,14 @@ fn WindowId_val<'a>(val: &'a WindowId_) -> &'a WindowId {
   val.0.as_ref()
 }
 
+// window::WindowId (==)
+#[ocaml::func]
+pub fn re_winit_window_WindowId_eq(a: WindowId_, b: WindowId_) -> Result<bool, Error> {
+  let a = a.0.as_ref();
+  let b = b.0.as_ref();
+  Ok(a == b)
+}
+
 // window::Window
 //------------------------------------------------------------------------------
 
@@ -104,6 +112,81 @@ pub fn re_winit_window_Window_new(event_loop: EventLoop_) -> Result<Window_, Err
     };
   }
   Err(Val_Exn("No EventLoop".to_string()))
+}
+
+// window::Window::id
+#[ocaml::func]
+pub fn re_winit_window_Window_id(window: Window_) -> Result<WindowId_, Error> {
+  let id = window.0.as_ref().id();
+  println!("{:?}", id);
+  Ok(Val_WindowId(id))
+}
+
+// window::Window::set_always_on_top
+#[ocaml::func]
+pub fn re_winit_window_Window_set_always_on_top(
+  always_on_top: bool,
+  window: Window_,
+) -> Result<(), Error> {
+  window.0.as_ref().set_always_on_top(always_on_top);
+  Ok(())
+}
+
+// window::Window::set_cursor_grab
+#[ocaml::func]
+pub fn re_winit_window_Window_set_cursor_grab(
+  cursor_grab: bool,
+  window: Window_,
+) -> Result<(), Error> {
+  match window.0.as_ref().set_cursor_grab(cursor_grab) {
+    Ok(_) => Ok(()),
+    Err(err) => Err(Val_Exn(err.to_string())),
+  }
+}
+
+// window::Window::set_decorations
+#[ocaml::func]
+pub fn re_winit_window_Window_set_decorations(
+  decorations: bool,
+  window: Window_,
+) -> Result<(), Error> {
+  window.0.as_ref().set_decorations(decorations);
+  Ok(())
+}
+
+// window::Window::set_minimized
+#[ocaml::func]
+pub fn re_winit_window_Window_set_minimized(minimized: bool, window: Window_) -> Result<(), Error> {
+  window.0.as_ref().set_minimized(minimized);
+  Ok(())
+}
+
+// window::Window::set_maximized
+#[ocaml::func]
+pub fn re_winit_window_Window_set_maximized(maximized: bool, window: Window_) -> Result<(), Error> {
+  window.0.as_ref().set_maximized(maximized);
+  Ok(())
+}
+
+// window::Window::set_resizable
+#[ocaml::func]
+pub fn re_winit_window_Window_set_resizable(resizable: bool, window: Window_) -> Result<(), Error> {
+  window.0.as_ref().set_resizable(resizable);
+  Ok(())
+}
+
+// window::Window::set_title
+#[ocaml::func]
+pub fn re_winit_window_Window_set_title(title: String, window: Window_) -> Result<(), Error> {
+  window.0.as_ref().set_title(&title);
+  Ok(())
+}
+
+// window::Window::set_visible
+#[ocaml::func]
+pub fn re_winit_window_Window_set_visible(visible: bool, window: Window_) -> Result<(), Error> {
+  window.0.as_ref().set_visible(visible);
+  Ok(())
 }
 
 // window::WindowBuilder
