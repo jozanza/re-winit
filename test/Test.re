@@ -31,15 +31,20 @@ if (Window.WindowId.(a != b)) {
   failwith("WindowId.t equality failed");
 };
 
-eventLoop
-|> EventLoop.run((event, _, _controlFlow) => {
-     event |> logEvent;
-     switch (event) {
-     | WindowEvent({window_id: _, event}) =>
-       switch (event) {
-       | CloseRequested => Exit
-       | _ => Wait
-       }
-     | _ => Wait
-     };
-   });
+let handleEvents = (event, _, _controlFlow): ControlFlow.t => {
+  event |> logEvent;
+  switch (event) {
+  | WindowEvent({window_id: _, event}) =>
+    switch (event) {
+    | KeyboardInput({
+        input: {state: Released, virtual_keycode: Some(Escape), _},
+        _,
+      })
+    | CloseRequested => Exit
+    | _ => Wait
+    }
+  | _ => Wait
+  };
+};
+
+eventLoop |> EventLoop.run(handleEvents);

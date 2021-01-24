@@ -2,8 +2,6 @@ _build
 .merlin
 Cargo.lock
 target
-vendor
-
 
 #Added by cargo
 #
