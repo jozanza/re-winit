@@ -3,7 +3,7 @@
  (deps (glob_files *.rs))
  (action
   (progn
-   (run cargo build --target-dir %{project_root}/../../target)
+   (run cargo build --release --target-dir %{project_root}/../../target)
    (run sh -c
      "mv %{project_root}/../../target/debug/libwinit.so ./dllwinit.so 2> /dev/null || \
       mv %{project_root}/../../target/debug/libwinit.dylib ./dllwinit.so")
