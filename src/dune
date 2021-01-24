@@ -5,9 +5,9 @@
   (progn
    (run cargo build --release --target-dir %{project_root}/../../target)
    (run sh -c
-     "mv %{project_root}/../../target/debug/libwinit.so ./dllwinit.so 2> /dev/null || \
-      mv %{project_root}/../../target/debug/libwinit.dylib ./dllwinit.so")
-   (run mv %{project_root}/../../target/debug/libwinit.a libwinit.a))))
+     "mv %{project_root}/../../target/release/libre_winit.so ./dllwinit.so 2> /dev/null || \
+      mv %{project_root}/../../target/release/libre_winit.dylib ./dllwinit.so")
+   (run mv %{project_root}/../../target/release/libre_winit.a libwinit.a))))
 
 (library
  (name winit)

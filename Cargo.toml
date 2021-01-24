@@ -1,5 +1,5 @@
 [package]
-name = "winit"
+name = "re-winit"
 version = "0.1.0"
 authors = ["jozanza <hello@jsavary.com>"]
 edition = "2018"
