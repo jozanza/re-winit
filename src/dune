@@ -3,8 +3,8 @@
  (deps (glob_files *.rs))
  (action
   (progn
-   (run cd ../../ && cargo install)
-   (run cargo build --release --target-dir %{project_root}/../../target)
+   ; (run cd ../../ && cargo install)
+   (run cargo build --offline --release --target-dir %{project_root}/../../target)
    (run sh -c
      "mv %{project_root}/../../target/release/libre_winit.so ./dllwinit.so 2> /dev/null || \
       mv %{project_root}/../../target/release/libre_winit.dylib ./dllwinit.so")
